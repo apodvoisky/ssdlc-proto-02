@@ -7,7 +7,7 @@ from models.data.customer import Customer
 router = APIRouter()
 
 
-@router.post("/customer")
+@router.post("/customer", status_code=201)
 async def add(req: CustomerReq):
     async with AsynSessionFactory() as sess:
         async with sess.begin():

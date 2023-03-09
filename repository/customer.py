@@ -14,16 +14,18 @@ class CustomerRepository:
 
     async def insert(self, customer: Customer) -> bool:
         try:
-            sql = insert(Customer).values(id=customer.id, member_id=customer.member_id,
-                                          timein=datetime.strptime(customer.timein, "%H:%M"),
-                                          timeout=datetime.strptime(customer.timeout, "%H:%M"),
-                                          date_log=customer.date_log)
-            sql.execution_options(synchronize_session="fetch")
-            await self.sess.execute(sql)
+            sql = insert(Customer).values(id=customer.id,
+                                          first_name=customer.first_name,
+                                          sur_name=customer.sur_name,
+                                          second_name=customer.second_name,
+                                          cell_phone=customer.cell_phone,
+                                          email=customer.email)
+            #sql.execution_options(synchronize_session="fetch")
+            #await self.sess.execute(sql)
 
-            # self.sess.add(customer)
-            # await self.sess.flush()
-        except:
+            self.sess.add(customer)
+            await self.sess.flush()
+        except Exception as e:
             return False
         return True
 
