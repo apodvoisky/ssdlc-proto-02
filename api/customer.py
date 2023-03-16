@@ -1,10 +1,9 @@
 import sys
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
-from typing import List
+
 from models.data.customer import Customer
-from models.requests.customerreq import CustomerReqBase
-from repository.customer import CustomerRepository
+from models.schemas.schema import CustomerReqBase
 from services.customer import CustomerService
 from infra.depends import SSDLCContainer
 from infra.exceptions import EntityNotFoundError
@@ -13,7 +12,11 @@ from infra.exceptions import EntityNotFoundError
 router = APIRouter()
 
 
-@router.post("/customer", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/customer",
+    status_code=status.HTTP_201_CREATED,
+    tags=['Customer'],
+)
 @inject
 async def add(req: CustomerReqBase, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     return await customer_service.create(req)
@@ -27,7 +30,8 @@ async def add(req: CustomerReqBase, customer_service: CustomerService = Depends(
             'response': status.HTTP_404_NOT_FOUND,
             'description': 'Specified customer does not exists'
         }
-    }
+    },
+    tags=['Customer'],
 )
 @inject
 async def update(
@@ -48,7 +52,8 @@ async def update(
             'response': status.HTTP_404_NOT_FOUND,
             'description': 'Specified customer does not exists'
         }
-    }
+    },
+    tags=['Customer'],
 )
 @inject
 async def delete(customer_id: int, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
@@ -58,7 +63,11 @@ async def delete(customer_id: int, customer_service: CustomerService = Depends(P
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@router.get("/customer", status_code=status.HTTP_200_OK)
+@router.get(
+    "/customer",
+    status_code=status.HTTP_200_OK,
+    tags=['Customer'],
+)
 @inject
 async def get_customer(customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     return await customer_service.get_all()
@@ -72,7 +81,8 @@ async def get_customer(customer_service: CustomerService = Depends(Provide[SSDLC
             'response': status.HTTP_404_NOT_FOUND,
             'description': 'Specified customer does not exists'
         }
-    }
+    },
+    tags=['Customer'],
 )
 @inject
 async def get(customer_id: int, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):

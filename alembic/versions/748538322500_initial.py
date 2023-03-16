@@ -1,14 +1,17 @@
-"""Initial
+"""initial
 
-Revision ID: cf4fa3651f5c
-Revises: 9a3a7d6645ef
-Create Date: 2023-03-10 06:45:04.293661
+Revision ID: 748538322500
+Revises: 316aaedb8536
+Create Date: 2023-03-16 21:20:06.659852
 
 """
+from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = 'cf4fa3651f5c'
-down_revision = '9a3a7d6645ef'
+revision = '748538322500'
+down_revision = '316aaedb8536'
 branch_labels = None
 depends_on = None
 

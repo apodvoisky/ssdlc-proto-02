@@ -1,5 +1,5 @@
 from repository.customer import CustomerRepository
-from models.requests.customerreq import CustomerReqBase
+from models.schemas.schema import CustomerReqBase
 
 
 class CustomerService:
@@ -11,7 +11,7 @@ class CustomerService:
         return customers
 
     async def get(self, customer_id: int):
-        customer = await self.customer_repository.get(customer_id
+        customer = await self.customer_repository.get(customer_id)
         return customer
 
     async def create(self, customer: CustomerReqBase):

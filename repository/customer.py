@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.data.customer import Customer
 
 from infra.exceptions import EntityNotFoundError
-from models.requests.customerreq import CustomerReqBase
+from models.schemas.schema import CustomerReqBase
 
 
 class CustomerNotFoundError(EntityNotFoundError):

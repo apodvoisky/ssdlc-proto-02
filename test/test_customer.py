@@ -7,8 +7,7 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from main import app
-from models.requests.customerreq import CustomerReqBase
-from db_config.sqlalchemy_async_connect import async_session_factory
+from models.schemas.schema import CustomerReqBase
 
 
 @pytest.fixture(scope="module")
@@ -22,13 +21,8 @@ def anyio_backend():
     return 'asyncio'
 
 
-@pytest.fixture
-def get_db():
-    return async_session_factory()
-
-
 @pytest.mark.anyio
-async def test_customer_get(get_db):
+async def test_customer_get():
     async with AsyncClient(app=app, base_url="http://127.0.0.1:8000/") as ac:
         new_customer = CustomerReqBase(
             first_name="Антон",
