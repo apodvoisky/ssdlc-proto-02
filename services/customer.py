@@ -11,9 +11,7 @@ class CustomerService:
         return customers
 
     async def get(self, customer_id: int):
-        customer = await self.customer_repository.get(customer_id)
-        if not customer:
-            raise ValueError("Заказчик не найден")
+        customer = await self.customer_repository.get(customer_id
         return customer
 
     async def create(self, customer: CustomerReqBase):
