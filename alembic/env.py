@@ -1,11 +1,9 @@
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from alembic import context
-
-from models.data.customer import Customer
 from db_config.sqlalchemy_async_connect import Base
 
 # this is the Alembic Config object, which provides
