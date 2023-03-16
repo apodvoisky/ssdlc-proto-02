@@ -57,9 +57,9 @@ class CustomerRepository:
             return query.scalars().all()
 
     async def get(self, id: int):
-        q = await self.session_factory.execute(select(Customer).where(Customer.id == id))
+        q = await self.sess.execute(select(Customer).where(Customer.id == id))
         return q.scalars().all()
 
     async def check(self, id: int):
-        q = await self.session_factory.execute(select(Customer).where(Customer.id == id))
+        q = await self.sess.execute(select(Customer).where(Customer.id == id))
         return q.scalar()

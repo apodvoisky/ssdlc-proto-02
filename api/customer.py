@@ -6,8 +6,8 @@ from models.data.customer import Customer
 from models.requests.customer import CustomerReq
 from repository.customer import CustomerRepository
 from services.customer import CustomerService
-from infra.depends import get_customer_service, get_dep_str, SSDLCContainer, TestService
-from db_config.sqlalchemy_async_connect import SessionFactory
+from infra.depends import SSDLCContainer
+
 
 
 router = APIRouter()
@@ -59,37 +59,12 @@ async def get_customer(customer_service: CustomerService = Depends(Provide[SSDLC
     return await customer_service.get_all()
 
 
-@router.get("/customer2")
-@inject
-async def get_customer2(customer_repo: CustomerRepository = Depends(Provide[SSDLCContainer.customer_repository])):
-    raise NotImplementedError()
-
-
-@router.get("/customer3")
-@inject
-async def get_customer3(sess = Depends(Provide[SSDLCContainer.async_session])):
-    repo = CustomerRepository(sess)
-    all_cust = await repo.get_all()
-    return all_cust
-
 @router.get("/customer/{id}") #, response_model=List[CustomerReq])
+@inject
 async def get(id: int, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     return await customer_service.get(id)
 
 
-def get_str() -> str:
-    return "hello!!!"
-
-
-def get_str2():
-    return "message!!!"
-
-
-@router.get("/")
-@inject
-async def test(val: str = Depends(get_str), service: TestService = Depends(Provide[SSDLCContainer.test_service])):
-    msg = await service.process()
-    return {msg: val}
 
 
 container = SSDLCContainer()
