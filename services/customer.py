@@ -1,5 +1,5 @@
 from repository.customer import CustomerRepository
-from models.requests.customer import CustomerReq
+from models.requests.customerreq import CustomerReqBase
 
 
 class CustomerService:
@@ -16,5 +16,11 @@ class CustomerService:
             raise ValueError("Заказчик не найден")
         return customer
 
-    async def create(self, customer: CustomerReq):
-        return self.customer_repository.create_user(customer)
+    async def create(self, customer: CustomerReqBase):
+        return await self.customer_repository.insert(customer)
+
+    async def delete(self, customer_id: int):
+        return await self.customer_repository.delete(customer_id)
+
+    async def update(self, customer_id: int, customer: CustomerReqBase):
+        return await self.customer_repository.update(customer_id, customer)

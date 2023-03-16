@@ -8,7 +8,7 @@ from httpx import AsyncClient
 
 from db_config.sqlalchemy_async_connect import async_session_factory
 from main import app
-from models.requests.customer import CustomerReq
+from models.requests.customerreq import CustomerReqBase
 from repository.customer import CustomerRepository
 
 
