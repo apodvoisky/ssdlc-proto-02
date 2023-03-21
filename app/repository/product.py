@@ -1,14 +1,14 @@
 from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
 
-from models.data.product import Product
+from app.models.data.product import Product
 
-from infra.exceptions import EntityNotFoundError
-from models.schemas.schema import ProductCreate, ProductBase, ProductUpdate
-from repository.customer import CustomerNotFoundError
+from app.infra.exceptions import EntityNotFoundError
+from app.models.schemas.schema import ProductCreate, ProductUpdate
+from app.repository.customer import CustomerNotFoundError
 
 
 class ProductNotFoundError(EntityNotFoundError):

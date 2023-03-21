@@ -1,10 +1,10 @@
 from typing import List
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import String
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from db_config.sqlalchemy_async_connect import Base
+from app.db_config.sqlalchemy_async_connect import Base
 
 
 class Customer(Base):

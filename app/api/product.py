@@ -2,13 +2,13 @@ import sys
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
-from models.data.product import Product
-from models.schemas.schema import ProductBase, ProductCreate, ProductUpdate
-from services.product import ProductService
-from infra.depends import SSDLCContainer
-from infra.exceptions import EntityNotFoundError
-from repository.customer import CustomerNotFoundError
-from repository.product import ProductNotFoundError
+from app.models.data.product import Product
+from app.models.schemas.schema import ProductCreate, ProductUpdate
+from app.services.product import ProductService
+from app.infra.depends import SSDLCContainer
+from app.infra.exceptions import EntityNotFoundError
+from app.repository.customer import CustomerNotFoundError
+from app.repository.product import ProductNotFoundError
 
 
 router = APIRouter()

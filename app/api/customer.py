@@ -2,12 +2,12 @@ import sys
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
-from models.data.customer import Customer
-from models.schemas.schema import CustomerCreate, Customers, Products, CustomerBase, CustomerUpdate
-from services.customer import CustomerService
-from services.product import ProductService
-from infra.depends import SSDLCContainer
-from infra.exceptions import EntityNotFoundError
+from app.models.data.customer import Customer
+from app.models.schemas.schema import CustomerCreate, Products, CustomerUpdate
+from app.services.customer import CustomerService
+from app.services.product import ProductService
+from app.infra.depends import SSDLCContainer
+from app.infra.exceptions import EntityNotFoundError
 
 
 router = APIRouter()
@@ -126,8 +126,8 @@ async def get_products(customer_id: int, products_service: ProductService = Depe
 @router.get("/customers/test/")
 @inject
 async def test(sess=Depends(Provide[SSDLCContainer.async_session])):
-    from models.data.customer import Customer
-    from models.data.product import Product
+    from app.models.data.customer import Customer
+    from app.models.data.product import Product
 
     async with sess.begin():
         customer1 = Customer(

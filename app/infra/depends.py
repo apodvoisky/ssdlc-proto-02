@@ -1,15 +1,10 @@
-from typing import Generator
-from fastapi import Depends
-import asyncio
 from dependency_injector import containers, providers
-from dependency_injector.providers import Factory
-from dependency_injector.wiring import inject, Provide
 
-from repository.customer import CustomerRepository
-from services.customer import CustomerService
-from repository.product import ProductRepository
-from services.product import ProductService
-from db_config.sqlalchemy_async_connect import SessionFactory, async_session
+from app.repository.customer import CustomerRepository
+from app.services.customer import CustomerService
+from app.repository.product import ProductRepository
+from app.services.product import ProductService
+from app.db_config.sqlalchemy_async_connect import SessionFactory, async_session
 
 
 class SSDLCContainer(containers.DeclarativeContainer):

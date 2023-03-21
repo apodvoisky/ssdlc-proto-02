@@ -1,5 +1,5 @@
-from repository.customer import CustomerRepository
-from models.schemas.schema import CustomerCreate, CustomerBase, CustomerUpdate
+from app.repository.customer import CustomerRepository
+from app.models.schemas.schema import CustomerCreate, CustomerUpdate
 
 
 class CustomerService:

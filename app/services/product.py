@@ -1,5 +1,5 @@
-from repository.product import ProductRepository
-from models.schemas.schema import ProductBase, ProductUpdate, ProductCreate
+from app.repository.product import ProductRepository
+from app.models.schemas.schema import ProductUpdate, ProductCreate
 
 
 class ProductService:

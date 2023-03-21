@@ -1,11 +1,11 @@
 from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import selectinload
 
-from models.data.customer import Customer
-from infra.exceptions import EntityNotFoundError
-from models.schemas.schema import CustomerBase, CustomerCreate, CustomerUpdate
+from app.models.data.customer import Customer
+from app.infra.exceptions import EntityNotFoundError
+from app.models.schemas.schema import CustomerCreate, CustomerUpdate
 
 
 class CustomerNotFoundError(EntityNotFoundError):

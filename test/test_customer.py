@@ -1,4 +1,3 @@
-import asyncio
 from json import dumps
 
 import pytest
@@ -6,8 +5,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
-from main import app
-from models.schemas.schema import CustomerBase
+from app.main import app
+from app.models.schemas.schema import CustomerBase
 
 
 @pytest.fixture(scope="module")
