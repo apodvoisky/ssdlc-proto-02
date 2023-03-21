@@ -1,8 +1,35 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
-class CustomerReqBase(BaseModel):
+class ProductBase(BaseModel):
+    title: str
+    code: str
+    customer_id: int
+
+
+class ProductUpdate(BaseModel):
+    title: Optional[str]
+    code: Optional[str]
+    customer_id: Optional[int]
+
+
+class ProductCreate(ProductBase):
+    ...
+
+
+class Product(ProductBase):
+    id: int
+
+    class Config:
+        orm_node = True
+
+
+class Products(List[Product]):
+    ...
+
+
+class CustomerBase(BaseModel):
     first_name: str
     second_name: str
     sur_name: str
@@ -10,35 +37,24 @@ class CustomerReqBase(BaseModel):
     email: str
 
 
-class CustomerReq(CustomerReqBase):
+class CustomerUpdate(BaseModel):
+    first_name: Optional[str]
+    second_name: Optional[str]
+    sur_name: Optional[str]
+    cell_phone: Optional[str]
+    email: Optional[str]
+
+class Customer(CustomerBase):
     id: int
+    products: List[Product]
 
     class Config:
         orm_node = True
 
 
-class CustomersReq(BaseModel):
-    __root__: List[CustomerReq]
+class CustomerCreate(CustomerBase):
+    ...
 
 
-class ProductReqBase(BaseModel):
-    title: str
-    code: str
-
-
-class ProductReq(ProductReqBase):
-    id: int
-    class Config:
-        orm_node = True
-
-
-class ProductsReq(BaseModel):
-    __root__: List[ProductReq]
-
-
-class CustomerSchema(CustomerReq):
-    products: List[ProductReqBase]
-
-
-class ProductSchema(ProductReq):
-    customers: List[CustomerReqBase]
+class Customers(List[Customer]):
+    ...

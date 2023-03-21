@@ -1,20 +1,24 @@
+from typing import List
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from models.data.customer_product import customer_product
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
 
 from db_config.sqlalchemy_async_connect import Base
-from models.data.product import Product
 
 
 class Customer(Base):
     __tablename__ = "customer"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
-    first_name = Column(String, unique=False, index=False)
-    second_name = Column(String, unique=False, index=False)
-    sur_name = Column(String, unique=False, index=False)
-    cell_phone = Column(String, unique=False, index=False)
-    email = Column(String, unique=False, index=False)
+    first_name: Mapped[str] = mapped_column(String(30))
+    second_name: Mapped[str] = mapped_column(String(30))
+    sur_name: Mapped[str] = mapped_column(String(30))
+    cell_phone: Mapped[str] = mapped_column(String(30))
+    email: Mapped[str] = mapped_column(String(30))
 
-    products = relationship("Product", secondary="customer_product", back_populates='customers')
+    products: Mapped[List["Product"]] = relationship(
+        back_populates="customer",
+        cascade="all, delete-orphan"
+    )

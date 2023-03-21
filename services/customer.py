@@ -1,5 +1,5 @@
 from repository.customer import CustomerRepository
-from models.schemas.schema import CustomerReqBase
+from models.schemas.schema import CustomerCreate, CustomerBase, CustomerUpdate
 
 
 class CustomerService:
@@ -14,11 +14,11 @@ class CustomerService:
         customer = await self.customer_repository.get(customer_id)
         return customer
 
-    async def create(self, customer: CustomerReqBase):
+    async def create(self, customer: CustomerCreate):
         return await self.customer_repository.insert(customer)
 
     async def delete(self, customer_id: int):
         return await self.customer_repository.delete(customer_id)
 
-    async def update(self, customer_id: int, customer: CustomerReqBase):
+    async def update(self, customer_id: int, customer: CustomerUpdate):
         return await self.customer_repository.update(customer_id, customer)

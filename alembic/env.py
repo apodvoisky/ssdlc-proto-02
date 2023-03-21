@@ -7,7 +7,7 @@ from sqlalchemy import pool
 from db_config.sqlalchemy_async_connect import Base
 import models.data.customer
 import models.data.product
-import models.data.customer_product
+
 
 
 

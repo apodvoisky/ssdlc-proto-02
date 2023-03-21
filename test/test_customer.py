@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from main import app
-from models.schemas.schema import CustomerReqBase
+from models.schemas.schema import CustomerBase
 
 
 @pytest.fixture(scope="module")
@@ -24,7 +24,7 @@ def anyio_backend():
 @pytest.mark.anyio
 async def test_customer_get():
     async with AsyncClient(app=app, base_url="http://127.0.0.1:8000/") as ac:
-        new_customer = CustomerReqBase(
+        new_customer = CustomerBase(
             first_name="Антон",
             sur_name="Иванович",
             second_name="Сергеев",

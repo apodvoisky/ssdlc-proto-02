@@ -1,5 +1,5 @@
 from repository.product import ProductRepository
-from models.schemas.schema import ProductReqBase
+from models.schemas.schema import ProductBase, ProductUpdate, ProductCreate
 
 
 class ProductService:
@@ -14,11 +14,14 @@ class ProductService:
         product = await self.product_repository.get(product_id)
         return product
 
-    async def create(self, product: ProductReqBase):
+    async def create(self, product: ProductCreate):
         return await self.product_repository.insert(product)
     
     async def delete(self, product_id: int):
         return await self.product_repository.delete(product_id)
 
-    async def update(self, product_id: int, product: ProductReqBase):
+    async def update(self, product_id: int, product: ProductUpdate):
         return await self.product_repository.update(product_id, product)
+
+    async def get_customer_products(self, customer_id: int):
+        return await self.product_repository.get_for_customer(customer_id)
