@@ -4,7 +4,7 @@ from fastapi import Depends
 from typing import Generator
 from dependency_injector.providers import Factory
 
-DB_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/ssdlc01"
+DB_URL = "postgresql+asyncpg://postgres:postgres@192.168.1.7:5432/ssdlc02"
 
 
 async def create_async_session() -> Generator:
