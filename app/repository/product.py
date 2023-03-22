@@ -54,7 +54,7 @@ class ProductRepository:
 
             try:
                 await self.sess.execute(q)
-            except IntegrityError as e:
+            except IntegrityError:
                 raise CustomerNotFoundError(product.customer_id)
 
             return await self.get(product_id)

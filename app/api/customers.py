@@ -62,7 +62,9 @@ async def update(
     summary="Удалить данные по потребителю по его идентификатору.",
 )
 @inject
-async def delete(customer_id: int, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
+async def delete(
+        customer_id: int,
+        customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     try:
         return await customer_service.delete(customer_id=customer_id)
     except EntityNotFoundError as e:
@@ -115,7 +117,9 @@ async def get(customer_id: int, customer_service: CustomerService = Depends(Prov
     summary="Получить данные по продуктам потребителя по его идентификатору.",
 )
 @inject
-async def get_products(customer_id: int, products_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
+async def get_products(
+        customer_id: int,
+        products_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
         products: Customer = await products_service.get_customer_products(customer_id)
         return products
@@ -125,17 +129,37 @@ async def get_products(customer_id: int, products_service: ProductService = Depe
 
 @router.get("/customers/test/")
 @inject
-async def test(sess=Depends(Provide[SSDLCContainer.async_session])):
+async def test(
+        sess=Depends(Provide[SSDLCContainer.async_session]),
+        user_service=Depends(Provide[SSDLCContainer.user_service])):
+    from app.models.schemas.schema import UserCreate
     from app.models.data.customer import Customer
     from app.models.data.product import Product
 
+    user1 = await user_service.create(user=UserCreate(
+        first_name="User1",
+        second_name="User1",
+        sur_name="User1",
+        cell_phone="User1",
+        email="User1",
+        password="P@User1"
+    ))
+
+    user2 = await user_service.create(user=UserCreate(
+        first_name="User2",
+        second_name="User2",
+        sur_name="User2",
+        cell_phone="User2",
+        email="User2",
+        password="P@ssw0rd1",
+    ))
+
     async with sess.begin():
         customer1 = Customer(
-            first_name="Customer1",
-            second_name="Customer1",
-            sur_name="Customer1",
-            cell_phone="Customer1",
-            email="Customer1",
+            full_name="Customer11",
+            short_name="C11",
+            primary_contact=user1.id,
+            secondary_contact=user2.id,
             products=[
                 Product(
                     title="Product1",
@@ -147,10 +171,10 @@ async def test(sess=Depends(Provide[SSDLCContainer.async_session])):
                 ),
             ]
         )
+
         sess.add_all([customer1])
         await sess.commit()
 
 
 container = SSDLCContainer()
 container.wire(modules=[sys.modules[__name__]])
-
