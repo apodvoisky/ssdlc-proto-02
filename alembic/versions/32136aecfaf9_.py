@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 7b1bbd28fec7
+Revision ID: 32136aecfaf9
 Revises: 
-Create Date: 2023-03-21 07:48:35.166308
+Create Date: 2023-03-22 07:41:30.153209
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7b1bbd28fec7'
+revision = '32136aecfaf9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,6 +25,8 @@ def upgrade() -> None:
     sa.Column('sur_name', sa.String(length=30), nullable=False),
     sa.Column('cell_phone', sa.String(length=30), nullable=False),
     sa.Column('email', sa.String(length=30), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('products',
@@ -32,6 +34,8 @@ def upgrade() -> None:
     sa.Column('title', sa.String(length=30), nullable=False),
     sa.Column('code', sa.String(length=10), nullable=False),
     sa.Column('customer_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -46,6 +48,7 @@ class ProductRepository:
                 q = q.values(code=product.code)
             if product.customer_id:
                 q = q.values(customer_id=product.customer_id)
+            q = q.values(updated_at=datetime.utcnow)
 
             q.execution_options(synchronize_session="fetch")
 

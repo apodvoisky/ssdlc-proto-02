@@ -5,9 +5,10 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
 from app.db_config.sqlalchemy_async_connect import Base
+from app.models.data.mixins import Timestamp
 
 
-class Customer(Base):
+class Customer(Timestamp, Base):
     __tablename__ = "customer"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

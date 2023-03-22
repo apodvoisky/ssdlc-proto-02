@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,6 +50,7 @@ class CustomerRepository:
                 q = q.values(cell_phone=customer.cell_phone)
             if customer.email:
                 q = q.values(email=customer.email)
+            q = q.values(updated_at=datetime.utcnow)
 
             q.execution_options(synchronize_session="fetch")
             await self.sess.execute(q)
