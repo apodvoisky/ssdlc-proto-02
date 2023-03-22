@@ -7,9 +7,10 @@ from sqlalchemy import ForeignKey
 from app.db_config.sqlalchemy_async_connect import Base
 
 from app.models.data.customer import Customer
+from app.models.data.mixins import Timestamp
 
 
-class Product(Base):
+class Product(Timestamp, Base):
     __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
