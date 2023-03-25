@@ -3,15 +3,13 @@ from datetime import datetime
 from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.exc import IntegrityError
 
 from app.models.data.user import User
-from app.infra.exceptions import EntityNotFoundError
 from app.models.schemas.schema import UserCreate, UserUpdate
 
+from app.infra.exceptions import UserEmailAlreadyExists
 
-class UserNotFoundError(EntityNotFoundError):
-    entity_name: str = "User"
 
 
 class UserRepository:
@@ -29,7 +27,11 @@ class UserRepository:
                 password=data.password)
 
             self.sess.add(user)
-            await self.sess.commit()
+            try:
+                await self.sess.commit()
+            except IntegrityError as e:
+                if -1 != str(e).find("user_email_key"):
+                    raise UserEmailAlreadyExists()
 
             return user
 

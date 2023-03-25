@@ -1,4 +1,5 @@
-from sqlalchemy import String
+import uuid
+from sqlalchemy import String, text
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
@@ -11,7 +12,7 @@ from app.infra.hashservice import HashService
 class User(Timestamp, Base):
     __tablename__ = "user"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text('uuid_generate_v4()'))
 
     first_name: Mapped[str] = mapped_column(String(30))
     second_name: Mapped[str] = mapped_column(String(30))

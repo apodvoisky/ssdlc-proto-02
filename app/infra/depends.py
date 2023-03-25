@@ -6,6 +6,7 @@ from app.repository.product import ProductRepository
 from app.services.product import ProductService
 from app.repository.user import UserRepository
 from app.services.user import UserService
+from app.services.security import SecurityService
 
 from app.db_config.sqlalchemy_async_connect import SessionFactory, async_session
 
@@ -22,3 +23,5 @@ class SSDLCContainer(containers.DeclarativeContainer):
 
     product_repository = providers.Factory(ProductRepository, sess=async_session)
     product_service = providers.Factory(ProductService, product_repository=product_repository)
+
+    security_service = providers.Factory(SecurityService)

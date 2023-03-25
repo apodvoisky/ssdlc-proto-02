@@ -4,14 +4,14 @@ from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy.exc import IntegrityError
 
 from app.models.data.customer import Customer
-from app.infra.exceptions import EntityNotFoundError
+from app.infra.exceptions import (
+    CustomerNotFoundError,
+    CustomerFullNameAlreadyExists,
+    CustomerShortNameAlreadyExists)
 from app.models.schemas.schema import CustomerCreate, CustomerUpdate
-
-
-class CustomerNotFoundError(EntityNotFoundError):
-    entity_name: str = "Customer"
 
 
 class CustomerRepository:
@@ -28,7 +28,13 @@ class CustomerRepository:
             )
 
             self.sess.add(customer)
-            await self.sess.commit()
+            try:
+                await self.sess.commit()
+            except IntegrityError as e:
+                if -1 != str(e).find("customer_full_name_key"):
+                    raise CustomerFullNameAlreadyExists()
+                elif -1 != str(e).find("customer_short_name_key"):
+                    raise CustomerShortNameAlreadyExists()
 
             return customer
 

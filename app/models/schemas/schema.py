@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from uuid import UUID
 
 
 class ProductBase(BaseModel):
@@ -19,7 +20,7 @@ class ProductCreate(ProductBase):
 
 
 class Product(ProductBase):
-    id: int
+    id: UUID
 
     class Config:
         orm_node = True
@@ -36,7 +37,15 @@ class UserBase(BaseModel):
     cell_phone: str
     email: str
 
-#TODO: password hash?
+    class Config:
+        orm_node = True
+
+
+class User(UserBase):
+    id: UUID
+
+    class Config:
+        orm_node = True
 
 
 class UserCreate(UserBase):
@@ -54,19 +63,19 @@ class UserUpdate(BaseModel):
 class CustomerBase(BaseModel):
     full_name: str
     short_name: str
-    primary_contact: int
-    secondary_contact: int
+    primary_contact: UUID
+    secondary_contact: UUID
 
 
 class CustomerUpdate(BaseModel):
     full_name: Optional[str]
     short_name: Optional[str]
-    primary_contact: Optional[int]
-    secondary_contact: Optional[int]
+    primary_contact: Optional[UUID]
+    secondary_contact: Optional[UUID]
 
 
 class Customer(CustomerBase):
-    id: int
+    id: UUID
     products: List[Product]
 
     class Config:

@@ -8,13 +8,9 @@ from sqlalchemy.exc import IntegrityError
 
 from app.models.data.product import Product
 
-from app.infra.exceptions import EntityNotFoundError
+
 from app.models.schemas.schema import ProductCreate, ProductUpdate
-from app.repository.customer import CustomerNotFoundError
-
-
-class ProductNotFoundError(EntityNotFoundError):
-    entity_name: str = "Product"
+from app.infra.exceptions import ProductNotFoundError, CustomerNotFoundError
 
 
 class ProductRepository:

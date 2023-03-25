@@ -11,21 +11,22 @@ from app.infra.depends import SSDLCContainer
 
 import app.settings as settings
 from app.models.schemas.schema import Token
-from app.services.security import create_access_token
+from app.services.security import SecurityService
 from app.services.user import UserService
 
 router = APIRouter()
 
 
 @router.post(
-    "/token",
+    "/login",
     tags=["Security"],
     response_model=Token
 )
 @inject
 async def generate_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    user_service: UserService = Depends(Provide[SSDLCContainer.user_service])
+    user_service: UserService = Depends(Provide[SSDLCContainer.user_service]),
+    security_service: SecurityService = Depends(Provide[SSDLCContainer.security_service])
 ):
     user = await user_service.get_by_email(form_data.username)
     if user is None:
@@ -42,7 +43,7 @@ async def generate_token(
         )
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
+    access_token = security_service.create_access_token(
         data={"sub": user.email, "other_custom_data": [1, 2, 3, 4]},
         expires_delta=access_token_expires,
     )
