@@ -6,13 +6,13 @@ from uuid import UUID
 class ProductBase(BaseModel):
     title: str
     code: str
-    customer_id: int
+    customer_id: UUID
 
 
 class ProductUpdate(BaseModel):
     title: Optional[str]
     code: Optional[str]
-    customer_id: Optional[int]
+    customer_id: Optional[UUID]
 
 
 class ProductCreate(ProductBase):

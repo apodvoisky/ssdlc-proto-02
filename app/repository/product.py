@@ -10,7 +10,12 @@ from app.models.data.product import Product
 
 
 from app.models.schemas.schema import ProductCreate, ProductUpdate
-from app.infra.exceptions import ProductNotFoundError, CustomerNotFoundError
+from app.infra.exceptions import (
+    ProductNotFoundError,
+    CustomerNotFoundError,
+    ProductTitleAlreadyExists,
+    ProductCodeAlreadyExists,
+)
 
 
 class ProductRepository:
@@ -26,7 +31,13 @@ class ProductRepository:
             )
 
             self.sess.add(product)
-            await self.sess.commit()
+            try:
+                await self.sess.commit()
+            except IntegrityError as e:
+                if -1 != str(e).find("product_title"):
+                    raise ProductTitleAlreadyExists()
+                elif -1 != str(e).find("product_code"):
+                    raise ProductCodeAlreadyExists()
 
             return product
 

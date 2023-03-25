@@ -37,7 +37,6 @@ router = APIRouter()
 async def add(
         req: CustomerCreate,
         customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
-    return await customer_service.create(req)
     try:
         result = await customer_service.create(req)
         return Customer.parse_obj(result.__dict__)

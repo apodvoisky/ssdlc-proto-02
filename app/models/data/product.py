@@ -15,8 +15,8 @@ class Product(Timestamp, Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text('uuid_generate_v4()'))
 
-    title: Mapped[str] = mapped_column(String(30))
-    code: Mapped[str] = mapped_column(String(10))
+    title: Mapped[str] = mapped_column(String(30), unique=True)
+    code: Mapped[str] = mapped_column(String(10), unique=True)
     customer_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("customer.id"))
 
     customer: Mapped["Customer"] = relationship(back_populates="products")

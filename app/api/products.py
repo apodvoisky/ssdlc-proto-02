@@ -3,10 +3,14 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
 from app.models.data.product import Product
-from app.models.schemas.schema import ProductCreate, ProductUpdate
+from app.models.schemas.schema import ProductCreate, ProductUpdate, Product
 from app.services.product import ProductService
 from app.infra.depends import SSDLCContainer
-from app.infra.exceptions import EntityNotFoundError
+from app.infra.exceptions import (
+    EntityNotFoundError,
+    ProductTitleAlreadyExists,
+    ProductCodeAlreadyExists,
+)
 from app.repository.customer import CustomerNotFoundError
 from app.repository.product import ProductNotFoundError
 
@@ -19,10 +23,28 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Product"],
     summary="Добавить новый продукт.",
+    responses={
+        400: {
+            "response": status.HTTP_400_BAD_REQUEST,
+            "description": "Ошибка аргументов, невозможно создать продукт."
+        },
+    },
+    response_model=Product
 )
 @inject
 async def add(req: ProductCreate, product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
-    return await product_service.create(req)
+    try:
+        result = await product_service.create(req)
+        return Product.parse_obj(result.__dict__)
+
+    except ProductTitleAlreadyExists:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f'Продукт с наименованием {req.title} уже зарегистрирован.')
+    except ProductCodeAlreadyExists:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f'Продукт с кодом {req.code} уже зарегистрирован.')
 
 
 @router.patch(

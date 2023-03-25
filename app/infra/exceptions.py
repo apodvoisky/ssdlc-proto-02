@@ -25,6 +25,13 @@ class CustomerShortNameAlreadyExists(Exception):
     ...
 
 
+class ProductTitleAlreadyExists(Exception):
+    ...
+
+
+class ProductCodeAlreadyExists(Exception):
+    ...
+
 class ProductNotFoundError(EntityNotFoundError):
     entity_name: str = "Product"
 
