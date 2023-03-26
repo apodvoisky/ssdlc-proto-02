@@ -4,14 +4,14 @@ from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy.exc import IntegrityError
 
 from app.models.data.customer import Customer
-from app.infra.exceptions import EntityNotFoundError
+from app.infra.exceptions import (
+    CustomerNotFoundError,
+    CustomerFullNameAlreadyExists,
+    CustomerShortNameAlreadyExists)
 from app.models.schemas.schema import CustomerCreate, CustomerUpdate
-
-
-class CustomerNotFoundError(EntityNotFoundError):
-    entity_name: str = "Customer"
 
 
 class CustomerRepository:
@@ -21,14 +21,20 @@ class CustomerRepository:
     async def insert(self, data: CustomerCreate):
         async with self.sess.begin():
             customer = Customer(
-                first_name=data.first_name,
-                sur_name=data.sur_name,
-                second_name=data.second_name,
-                cell_phone=data.cell_phone,
-                email=data.email)
+                full_name=data.full_name,
+                short_name=data.short_name,
+                primary_contact=data.primary_contact,
+                secondary_contact=data.secondary_contact,
+            )
 
             self.sess.add(customer)
-            await self.sess.commit()
+            try:
+                await self.sess.commit()
+            except IntegrityError as e:
+                if -1 != str(e).find("customer_full_name_key"):
+                    raise CustomerFullNameAlreadyExists()
+                elif -1 != str(e).find("customer_short_name_key"):
+                    raise CustomerShortNameAlreadyExists()
 
             return customer
 
@@ -40,16 +46,15 @@ class CustomerRepository:
 
             q = update(Customer).where(Customer.id == customer_id)
 
-            if customer.first_name:
-                q = q.values(first_name=customer.first_name)
-            if customer.sur_name:
-                q = q.values(sur_name=customer.sur_name)
-            if customer.second_name:
-                q = q.values(second_name=customer.second_name)
-            if customer.cell_phone:
-                q = q.values(cell_phone=customer.cell_phone)
-            if customer.email:
-                q = q.values(email=customer.email)
+            if customer.full_name:
+                q = q.values(full_name=customer.full_name)
+            if customer.short_name:
+                q = q.values(short_name=customer.short_name)
+            if customer.primary_contact:
+                q = q.values(second_name=customer.primary_contact)
+            if customer.secondary_contact:
+                q = q.values(cell_phone=customer.secondary_contact)
+
             q = q.values(updated_at=datetime.utcnow)
 
             q.execution_options(synchronize_session="fetch")

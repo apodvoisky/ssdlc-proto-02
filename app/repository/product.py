@@ -8,13 +8,14 @@ from sqlalchemy.exc import IntegrityError
 
 from app.models.data.product import Product
 
-from app.infra.exceptions import EntityNotFoundError
+
 from app.models.schemas.schema import ProductCreate, ProductUpdate
-from app.repository.customer import CustomerNotFoundError
-
-
-class ProductNotFoundError(EntityNotFoundError):
-    entity_name: str = "Product"
+from app.infra.exceptions import (
+    ProductNotFoundError,
+    CustomerNotFoundError,
+    ProductTitleAlreadyExists,
+    ProductCodeAlreadyExists,
+)
 
 
 class ProductRepository:
@@ -30,7 +31,13 @@ class ProductRepository:
             )
 
             self.sess.add(product)
-            await self.sess.commit()
+            try:
+                await self.sess.commit()
+            except IntegrityError as e:
+                if -1 != str(e).find("product_title"):
+                    raise ProductTitleAlreadyExists()
+                elif -1 != str(e).find("product_code"):
+                    raise ProductCodeAlreadyExists()
 
             return product
 
@@ -54,7 +61,7 @@ class ProductRepository:
 
             try:
                 await self.sess.execute(q)
-            except IntegrityError as e:
+            except IntegrityError:
                 raise CustomerNotFoundError(product.customer_id)
 
             return await self.get(product_id)
