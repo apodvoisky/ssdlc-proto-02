@@ -73,7 +73,7 @@ async def update(
     responses={
         404: {
             "response": status.HTTP_404_NOT_FOUND,
-            "description": "Specified user does not exists"
+            "description": "Указанный пользователь не зарегистрирован."
         }
     },
     tags=["User"],

@@ -93,7 +93,7 @@ async def update(
     responses={
         404: {
             "response": status.HTTP_404_NOT_FOUND,
-            "description": "Specified product does not exists"
+            "description": "Указанный продукт не зарегистрирован."
         }
     },
     tags=["Product"],
