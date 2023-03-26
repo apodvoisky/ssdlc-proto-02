@@ -55,9 +55,13 @@ async def add(
     "/customers/{customer_id}",
     status_code=status.HTTP_200_OK,
     responses={
+        400: {
+            "response": status.HTTP_400_BAD_REQUEST,
+            "description": "Ошибка аргументов, невозможно обновить потребителя."
+        },
         404: {
             "response": status.HTTP_404_NOT_FOUND,
-            "description": "Specified customer does not exists"
+            "description": "Указанный потребитель не зарегистрирован."
         }
     },
     tags=["Customer"],
@@ -69,7 +73,17 @@ async def update(
         req: CustomerUpdate,
         customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     try:
-        return await customer_service.update(customer_id=customer_id, customer=req)
+        result = await customer_service.update(customer_id=customer_id, customer=req)
+        return Customer.parse_obj(result.__dict__)
+
+    except CustomerFullNameAlreadyExists:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f'Потребитель с наименованием {req.full_name} уже зарегистрирован')
+    except CustomerShortNameAlreadyExists:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f'Потребитель с кратким наименованием {req.short_name} уже зарегистрирован')
     except EntityNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 
@@ -91,7 +105,7 @@ async def delete(
         customer_id: int,
         customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     try:
-        return await customer_service.delete(customer_id=customer_id)
+        await customer_service.delete(customer_id=customer_id)
     except EntityNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 

@@ -36,16 +36,17 @@ async def add(
     except UserEmailAlreadyExists:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f'Пользователь с адресом {req.email} уже зарегистрирован')
 
-
-
-
 @router.patch(
     "/users/{user_id}",
     status_code=status.HTTP_200_OK,
     responses={
+        400: {
+            "response": status.HTTP_400_BAD_REQUEST,
+            "description": "Ошибка аргументов, невозможно обновить пользователя."
+        },
         404: {
             "response": status.HTTP_404_NOT_FOUND,
-            "description": "Specified user does not exists"
+            "description": "Указанный пользователь не зарегистрирован."
         }
     },
     tags=["User"],
@@ -57,7 +58,11 @@ async def update(
         req: UserUpdate,
         user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
-        return await user_service.update(user_id=user_id, user=req)
+        result = await user_service.update(user_id=user_id, user=req)
+        return User.parse_obj(result.__dict__)
+
+    except UserEmailAlreadyExists:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f'Пользователь с адресом {req.email} уже зарегистрирован')
     except EntityNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 
@@ -79,7 +84,7 @@ async def delete(
         user_id: int,
         user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
-        return await user_service.delete(user_id=user_id)
+        await user_service.delete(user_id=user_id)
     except EntityNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 

@@ -18,7 +18,7 @@ class ProductService:
         return await self.product_repository.insert(product)
 
     async def delete(self, product_id: int):
-        return await self.product_repository.delete(product_id)
+        await self.product_repository.delete(product_id)
 
     async def update(self, product_id: int, product: ProductUpdate):
         return await self.product_repository.update(product_id, product)

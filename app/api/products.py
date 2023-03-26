@@ -51,13 +51,18 @@ async def add(req: ProductCreate, product_service: ProductService = Depends(Prov
     "/products/{product_id}",
     status_code=status.HTTP_200_OK,
     responses={
+        400: {
+            "response": status.HTTP_400_BAD_REQUEST,
+            "description": "Ошибка аргументов, невозможно обновить продукт."
+        },
         404: {
             "response": status.HTTP_404_NOT_FOUND,
-            "description": "Specified product does not exists"
+            "description": "Указанный продукт не зарегистрирован."
         }
     },
     tags=["Product"],
     summary="Обновить данные по продукту по его идентификатору.",
+    response_model=Product,
 )
 @inject
 async def update(
@@ -65,11 +70,21 @@ async def update(
         req: ProductUpdate,
         product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
-        return await product_service.update(product_id=product_id, product=req)
+        result = await product_service.update(product_id=product_id, product=req)
+        return Product.parse_obj(result.__dict__)
+
     except CustomerNotFoundError as cnfe:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(cnfe))
     except ProductNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
+    except ProductTitleAlreadyExists:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f'Продукт с наименованием {req.title} уже зарегистрирован.')
+    except ProductCodeAlreadyExists:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f'Продукт с кодом {req.code} уже зарегистрирован.')
 
 
 @router.delete(
@@ -87,7 +102,7 @@ async def update(
 @inject
 async def delete(product_id: int, product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
-        return await product_service.delete(product_id=product_id)
+        await product_service.delete(product_id=product_id)
     except EntityNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
 
