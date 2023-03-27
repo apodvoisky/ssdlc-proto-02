@@ -13,6 +13,7 @@ import app.settings as settings
 from app.models.schemas.schema import Token
 from app.services.security import SecurityService
 from app.services.user import UserService
+from app.infra.exceptions import UserNotFoundError
 
 router = APIRouter()
 
@@ -28,8 +29,9 @@ async def generate_token(
     user_service: UserService = Depends(Provide[SSDLCContainer.user_service]),
     security_service: SecurityService = Depends(Provide[SSDLCContainer.security_service])
 ):
-    user = await user_service.get_by_email(form_data.username)
-    if user is None:
+    try:
+        user = await user_service.get_by_email(form_data.username)
+    except UserNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Имя пользователя задано неверно.",

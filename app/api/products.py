@@ -1,4 +1,5 @@
 import sys
+from uuid import UUID
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
@@ -66,7 +67,7 @@ async def add(req: ProductCreate, product_service: ProductService = Depends(Prov
 )
 @inject
 async def update(
-        product_id: int,
+        product_id: UUID,
         req: ProductUpdate,
         product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
@@ -100,7 +101,7 @@ async def update(
     summary="Удалить продукт по его идентификатору.",
 )
 @inject
-async def delete(product_id: int, product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
+async def delete(product_id: UUID, product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
         await product_service.delete(product_id=product_id)
     except EntityNotFoundError as e:
@@ -131,7 +132,7 @@ async def get_product(product_service: ProductService = Depends(Provide[SSDLCCon
     summary="Получить данные продукта по его идентификатору",
 )
 @inject
-async def get(product_id: int, product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
+async def get(product_id: UUID, product_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
         product: Product = await product_service.get(product_id)
         return product

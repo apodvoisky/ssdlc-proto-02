@@ -5,7 +5,7 @@ from dependency_injector.providers import Factory
 
 DB_URL = "postgresql+asyncpg://postgres:postgres@192.168.1.7:5432/ssdlc02"
 
-
+"""
 async def create_async_session() -> Generator:
     engine = create_async_engine(DB_URL)
     async_session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
@@ -17,7 +17,7 @@ async def create_async_session() -> Generator:
 
 class SessionFactory(Factory):
     async_session = Factory(create_async_session)
-
+"""
 
 engine = create_async_engine(DB_URL, future=True, echo=True)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

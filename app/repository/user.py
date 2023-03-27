@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from app.models.data.user import User
 from app.models.schemas.schema import UserCreate, UserUpdate
 
-from app.infra.exceptions import UserEmailAlreadyExists
+from app.infra.exceptions import UserEmailAlreadyExists, UserNotFoundError
 
 
 

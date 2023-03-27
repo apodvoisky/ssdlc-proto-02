@@ -16,3 +16,15 @@ def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
+
+
+@pytest.fixture(scope="session")
+def _database_url():
+    return "postgresql+asyncpg://postgres:postgres@localhost/dbtest"
+
+
+@pytest.fixture(scope="session")
+def init_database():
+    from app.db_config.sqlalchemy_async_connect import Base
+
+    return Base.metadata.create_all()

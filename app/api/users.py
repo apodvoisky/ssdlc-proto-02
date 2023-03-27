@@ -1,4 +1,6 @@
 import sys
+from uuid import UUID
+
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
@@ -54,7 +56,7 @@ async def add(
 )
 @inject
 async def update(
-        user_id: int,
+        user_id: UUID,
         req: UserUpdate,
         user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
@@ -81,7 +83,7 @@ async def update(
 )
 @inject
 async def delete(
-        user_id: int,
+        user_id: UUID,
         user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
         await user_service.delete(user_id=user_id)
@@ -113,7 +115,7 @@ async def get_user(user_service: UserService = Depends(Provide[SSDLCContainer.us
     summary="Получить пользователя по его идентификатору.",
 )
 @inject
-async def get(user_id: int, user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
+async def get(user_id: UUID, user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
         user: User = await user_service.get(user_id)
         return user
