@@ -9,9 +9,6 @@ from fastapi import HTTPException
 from fastapi import status
 from app.services.user import UserService
 
-#TODO setting в контейнер?
-import app.settings as settings
-
 import app.infra.depends
 
 

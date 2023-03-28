@@ -3,7 +3,6 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt
 import time
 
-import app.settings as settings
 from app.infra.depends import SSDLCContainer
 
 
