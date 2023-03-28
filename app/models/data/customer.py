@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy import ForeignKey
 
-from app.db_config.sqlalchemy_async_connect import Base
+from app.infra.base import Base
 from app.models.data.mixins import Timestamp
 from app.models.data.user import User
 

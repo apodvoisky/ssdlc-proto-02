@@ -25,6 +25,10 @@ def _database_url():
 
 @pytest.fixture(scope="session")
 def init_database():
-    from app.db_config.sqlalchemy_async_connect import Base
+    from app.infra.base import Base
 
     return Base.metadata.create_all()
+
+@pytest.fixture(scope="session")
+def base_url():
+    return "http://127.0.0.1:8000/"

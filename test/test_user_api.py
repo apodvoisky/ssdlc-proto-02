@@ -46,8 +46,8 @@ async def test_user_crud():
 
 
 @pytest.mark.asyncio
-async def test_user_get_404():
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000/") as ac:
+async def test_user_get_404(base_url):
+    async with AsyncClient(app=app, base_url=base_url) as ac:
         response = await ac.get(
             f"/users/{str(uuid.uuid4())}")
 
