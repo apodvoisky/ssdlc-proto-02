@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 916853ccb09a
+Revision ID: 3622d2178970
 Revises: 
-Create Date: 2023-03-25 08:14:30.561966
+Create Date: 2023-03-26 16:11:34.812279
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '916853ccb09a'
+revision = '3622d2178970'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,7 +32,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('email')
     )
     op.create_table('customer',
-    sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('id', sa.Uuid(), server_default=sa.text('uuid_generate_v4()'), nullable=False),
     sa.Column('full_name', sa.String(length=128), nullable=False),
     sa.Column('short_name', sa.String(length=30), nullable=False),
     sa.Column('primary_contact', sa.Uuid(), nullable=False),
@@ -46,14 +46,16 @@ def upgrade() -> None:
     sa.UniqueConstraint('short_name')
     )
     op.create_table('product',
-    sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('id', sa.Uuid(), server_default=sa.text('uuid_generate_v4()'), nullable=False),
     sa.Column('title', sa.String(length=30), nullable=False),
     sa.Column('code', sa.String(length=10), nullable=False),
     sa.Column('customer_id', sa.Uuid(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('code'),
+    sa.UniqueConstraint('title')
     )
     # ### end Alembic commands ###
 

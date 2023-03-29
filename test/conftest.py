@@ -16,3 +16,19 @@ def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
+
+
+@pytest.fixture(scope="session")
+def _database_url():
+    return "postgresql+asyncpg://postgres:postgres@localhost/dbtest"
+
+
+@pytest.fixture(scope="session")
+def init_database():
+    from app.infra.base import Base
+
+    return Base.metadata.create_all()
+
+@pytest.fixture(scope="session")
+def base_url():
+    return "http://127.0.0.1:8000/"

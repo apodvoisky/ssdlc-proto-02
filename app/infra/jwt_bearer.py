@@ -1,15 +1,16 @@
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt
-from datetime import datetime
 import time
 
-import app.settings as settings
+from app.infra.depends import SSDLCContainer
 
 
 class JWTBearer(HTTPBearer):
     def __init__(self, auto_error: bool = True):
         super(JWTBearer, self).__init__(auto_error=auto_error)
+        self.jwt_secret_key = SSDLCContainer.config()['auth']['jwt_secret_key']
+        self.jwt_algorithm =  SSDLCContainer.config()['auth']['jwt_algorithm']
 
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
@@ -26,9 +27,9 @@ class JWTBearer(HTTPBearer):
         is_token_valid: bool = False
 
         try:
-            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+            payload = jwt.decode(token, self.jwt_secret_key, algorithms=[self.jwt_algorithm])
             payload = None if payload["exp"] <= time.time() else payload
-        except Exception as e:
+        except Exception: #TODO: Бредовая обработка исключений
             payload = None
 
         if payload:

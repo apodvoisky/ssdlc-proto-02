@@ -1,4 +1,7 @@
 import sys
+from uuid import UUID
+import uuid
+
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
@@ -13,11 +16,10 @@ from app.infra.exceptions import (
     CustomerShortNameAlreadyExists,
     CustomerFullNameAlreadyExists,
 )
+from app.infra.loginfra import SSDLCRoute
 
-import uuid
 
-
-router = APIRouter()
+router = APIRouter(route_class=SSDLCRoute)
 
 
 @router.post(
@@ -69,7 +71,7 @@ async def add(
 )
 @inject
 async def update(
-        customer_id: int,
+        customer_id: UUID,
         req: CustomerUpdate,
         customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     try:
@@ -102,7 +104,7 @@ async def update(
 )
 @inject
 async def delete(
-        customer_id: int,
+        customer_id: UUID,
         customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     try:
         await customer_service.delete(customer_id=customer_id)
@@ -135,7 +137,7 @@ async def get_customer(customer_service: CustomerService = Depends(Provide[SSDLC
     summary="Получить потребителя по его идентификатору.",
 )
 @inject
-async def get(customer_id: int, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
+async def get(customer_id: UUID, customer_service: CustomerService = Depends(Provide[SSDLCContainer.customer_service])):
     try:
         customer: Customer = await customer_service.get(customer_id)
         return customer
@@ -158,7 +160,7 @@ async def get(customer_id: int, customer_service: CustomerService = Depends(Prov
 )
 @inject
 async def get_products(
-        customer_id: int,
+        customer_id: UUID,
         products_service: ProductService = Depends(Provide[SSDLCContainer.product_service])):
     try:
         products: Customer = await products_service.get_customer_products(customer_id)
@@ -174,8 +176,7 @@ async def test(
         user_service=Depends(Provide[SSDLCContainer.user_service]),
         customer_service=Depends(Provide[SSDLCContainer.customer_service]),):
     from app.models.schemas.schema import UserCreate
-    from app.models.data.customer import Customer
-    from app.models.data.product import Product
+
 
     user1 = await user_service.create(user=UserCreate(
         first_name="User1",

@@ -1,15 +1,22 @@
 import sys
+from uuid import UUID
+from typing import List
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
 
 from app.models.data.user import User
-from app.models.schemas.schema import UserCreate, UserBase, UserUpdate, User
+from app.models.schemas.schema import (
+    UserCreate,
+    UserUpdate,
+    User,
+    Users)
 from app.services.user import UserService
 from app.infra.depends import SSDLCContainer
 from app.infra.exceptions import EntityNotFoundError, UserEmailAlreadyExists
+from app.infra.loginfra import SSDLCRoute
 
 
-router = APIRouter()
+router = APIRouter(route_class=SSDLCRoute)
 
 
 @router.post(
@@ -36,6 +43,7 @@ async def add(
     except UserEmailAlreadyExists:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f'Пользователь с адресом {req.email} уже зарегистрирован')
 
+
 @router.patch(
     "/users/{user_id}",
     status_code=status.HTTP_200_OK,
@@ -54,7 +62,7 @@ async def add(
 )
 @inject
 async def update(
-        user_id: int,
+        user_id: UUID,
         req: UserUpdate,
         user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
@@ -81,7 +89,7 @@ async def update(
 )
 @inject
 async def delete(
-        user_id: int,
+        user_id: UUID,
         user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
         await user_service.delete(user_id=user_id)
@@ -94,10 +102,13 @@ async def delete(
     status_code=status.HTTP_200_OK,
     tags=["User"],
     summary="Получить список всех пользователей.",
+    response_model=List[User]
 )
 @inject
-async def get_user(user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
-    return await user_service.get_all()
+async def get_user(
+        user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
+    users = await user_service.get_all()
+    return [User.parse_obj(user.__dict__) for user in users]
 
 
 @router.get(
@@ -111,15 +122,15 @@ async def get_user(user_service: UserService = Depends(Provide[SSDLCContainer.us
     },
     tags=["User"],
     summary="Получить пользователя по его идентификатору.",
+    response_model=User
 )
 @inject
-async def get(user_id: int, user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
+async def get(user_id: UUID, user_service: UserService = Depends(Provide[SSDLCContainer.user_service])):
     try:
         user: User = await user_service.get(user_id)
-        return user
+        return User.parse_obj(user.__dict__)
     except EntityNotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e))
-
 
 
 container = SSDLCContainer()

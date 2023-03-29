@@ -60,6 +60,10 @@ class UserUpdate(BaseModel):
     email: Optional[str]
 
 
+class Users(List[User]):
+    ...
+
+
 class CustomerBase(BaseModel):
     full_name: str
     short_name: str

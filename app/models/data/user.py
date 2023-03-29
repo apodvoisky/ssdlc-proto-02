@@ -3,7 +3,7 @@ from sqlalchemy import String, text
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from app.db_config.sqlalchemy_async_connect import Base
+from app.infra.base import Base
 from app.models.data.mixins import Timestamp
 
 from app.infra.hashservice import HashService
