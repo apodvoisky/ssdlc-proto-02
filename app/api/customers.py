@@ -1,5 +1,6 @@
 import sys
 from uuid import UUID
+import uuid
 
 from fastapi import APIRouter, HTTPException, Depends, status
 from dependency_injector.wiring import inject, Provide
@@ -15,11 +16,10 @@ from app.infra.exceptions import (
     CustomerShortNameAlreadyExists,
     CustomerFullNameAlreadyExists,
 )
+from app.infra.loginfra import SSDLCRoute
 
-import uuid
 
-
-router = APIRouter()
+router = APIRouter(route_class=SSDLCRoute)
 
 
 @router.post(
@@ -176,8 +176,7 @@ async def test(
         user_service=Depends(Provide[SSDLCContainer.user_service]),
         customer_service=Depends(Provide[SSDLCContainer.customer_service]),):
     from app.models.schemas.schema import UserCreate
-    from app.models.data.customer import Customer
-    from app.models.data.product import Product
+
 
     user1 = await user_service.create(user=UserCreate(
         first_name="User1",

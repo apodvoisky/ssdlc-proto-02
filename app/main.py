@@ -1,7 +1,14 @@
+import logging
+import uuid
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import customers, products, users, auth
+
+
+logname = str(uuid.uuid4())
+logging.basicConfig(filename=f'{logname}.log', level=logging.INFO)
+logging.info("SSDLC Proto Service")
 
 app = FastAPI()
 

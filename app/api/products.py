@@ -14,9 +14,10 @@ from app.infra.exceptions import (
 )
 from app.repository.customer import CustomerNotFoundError
 from app.repository.product import ProductNotFoundError
+from app.infra.loginfra import SSDLCRoute
 
 
-router = APIRouter()
+router = APIRouter(route_class=SSDLCRoute)
 
 
 @router.post(

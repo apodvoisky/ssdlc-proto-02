@@ -13,9 +13,10 @@ from app.models.schemas.schema import (
 from app.services.user import UserService
 from app.infra.depends import SSDLCContainer
 from app.infra.exceptions import EntityNotFoundError, UserEmailAlreadyExists
+from app.infra.loginfra import SSDLCRoute
 
 
-router = APIRouter()
+router = APIRouter(route_class=SSDLCRoute)
 
 
 @router.post(

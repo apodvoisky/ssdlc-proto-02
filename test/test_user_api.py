@@ -22,8 +22,8 @@ def anyio_backend():
 
 
 @pytest.mark.asyncio
-async def test_user_crud():
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000/") as ac:
+async def test_user_crud(base_url):
+    async with AsyncClient(app=app, base_url=base_url) as ac:
         new_user = UserCreate(
             first_name="Антон",
             sur_name="Иванович",
@@ -48,7 +48,8 @@ async def test_user_crud():
 @pytest.mark.asyncio
 async def test_user_get_404(base_url):
     async with AsyncClient(app=app, base_url=base_url) as ac:
+        fake_user_id = str(uuid.uuid4())
         response = await ac.get(
-            f"/users/{str(uuid.uuid4())}")
+            f"/users/{fake_user_id}")
 
         assert response.status_code == 404
